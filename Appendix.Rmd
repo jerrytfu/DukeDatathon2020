@@ -1,0 +1,80 @@
+---
+title: "Appendix"
+author: "Jerry"
+date: "10/31/2020"
+output: pdf_document
+---
+
+### Data Cleaning
+```{r load-packages, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(maps)
+library(broom)
+library(plyr)
+library(data.table)
+library(stringr)
+```
+
+```{r clean-global-city-indicators}
+global_city_indicators <- readxl::read_xlsx("data/raw/global-city-indicators.xlsx", 2)
+global_city_indicators <- global_city_indicators %>% 
+  filter(!is.na(Geography)) %>% 
+  t() %>% 
+  as.data.frame() %>%
+  select(V1, V2, V4, V5, V6, V7, V9, V10, V11, V12, V13, V14, V21, V22, V23, V25, V28, V32, V33, V34, V35)
+colnames(global_city_indicators) <- as.character(as.vector(global_city_indicators[1,]))
+
+global_city_indicators <- global_city_indicators %>% 
+  slice(3:71) %>% 
+  setDT(keep.rownames = "Cities")
+```
+
+```{r filter-seoul, eval = FALSE}
+seoul <- read.csv("data/raw/SeoulTimeProvince.csv") %>% 
+  filter(province == "Seoul") %>% 
+  write.csv(file = "data/raw/SeoulTimeProvince.csv")
+```
+
+```{r filter-delhi, eval = FALSE}
+delhi <- read.csv("data/raw/covid_19_india.csv") %>% 
+  filter(State.UnionTerritory == "Delhi") %>% 
+  write.csv(file = "data/raw/covid_19_india.csv")
+```
+
+```{r filter-los-angeles, eval = FALSE}
+losangeles <- read.csv("data/raw/us_counties_covid19_daily.csv") %>% 
+  filter(county == "Los Angeles") %>% 
+  write.csv(file = "data/raw/us_counties_covid19_daily.csv")
+```
+
+```{r filter-new-york, eval = FALSE}
+newyork <- read.csv("data/raw/us_counties_covid19_daily.csv") %>% 
+  filter(county == "New York City") %>% 
+  write.csv(file = "data/raw/us_counties_covid19_daily.csv")
+```
+
+```{r filter-beijing, eval = FALSE}
+beijing <- read.csv("data/raw/covid_19_data.csv") %>% 
+  filter(Province.State == "Beijing") %>% 
+  write.csv(file = "data/raw/covid_19_data.csv")
+```
+
+```{r filter-shanghai, eval = FALSE}
+shanghai <- read.csv("data/raw/covid_19_data.csv") %>% 
+  filter(Province.State == "Shanghai") %>% 
+  write.csv(file = "data/raw/covid_19_data.csv")
+```
+
+```{r filter-riodejaneiro, eval = FALSE}
+riodejaneiro <- read.csv("data/raw/brazil_covid19_cities.csv") %>% 
+  filter(name == "Rio de Janeiro") %>% 
+  write.csv(file = "data/raw/brazil_covid19_cities.csv")
+```
+
+```{r filter-rome, eval = FALSE}
+rome <- read.csv("data/covid19_italy_province.csv") %>% 
+  filter(ProvinceName == "Roma") %>% 
+  mutate(Date = str_sub(rome$Date, 1, 10),
+         ProvinceName = "Rome") %>% 
+   write.csv(file = "data/covid19_italy_province.csv")
+```
